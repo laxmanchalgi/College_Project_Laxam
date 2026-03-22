@@ -20,12 +20,14 @@ public CommandLineRunner seedData(UserRepository userRepository) {
         if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {
 
             User admin = new User();
-            admin.setEmail("admin@gmail.com"); // ✅ FIXED
+            admin.setEmail("admin@gmail.com"); // 
             admin.setPassword("admin@123");
             admin.setDisplayName("System Admin");
             admin.setRole("ADMIN");
-            admin.setApproved(true); // ✅ already approved
-            admin.setSuperAdmin(true); // ⭐ SUPER ADMIN
+			
+            admin.setApproved(true);
+			 // 
+            admin.setSuperAdmin(true); // 
 
             userRepository.save(admin);
 
