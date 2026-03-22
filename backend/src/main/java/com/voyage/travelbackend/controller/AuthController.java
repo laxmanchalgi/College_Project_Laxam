@@ -21,36 +21,39 @@ public class AuthController {
     private Map<String, String> otpStore = new HashMap<>();
 
 
-    // Signup
+    // ---------------- SIGNUP ----------------
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody User user) {
-        System.out.println("Signup request for: " + user.getEmail() + " with role: " + user.getRole());
 
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "Email already exists in database"));
+                    .body(Map.of("error", "Email already exists"));
         }
 
         try {
-            // If user is signing up as ADMIN, they need approval
+            // ✅ DEFAULT VALUES
+            user.setSuperAdmin(false); // ⭐ IMPORTANT
+            user.setRole(user.getRole() == null ? "USER" : user.getRole());
+
+            // ✅ ADMIN needs approval
             if ("ADMIN".equalsIgnoreCase(user.getRole())) {
                 user.setApproved(false);
             } else {
                 user.setApproved(true);
             }
-            
+
             User savedUser = userRepository.save(user);
-            System.out.println("User saved successfully with UID: " + savedUser.getUid());
+
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+
         } catch (Exception e) {
-            System.err.println("Error saving user: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Database error: " + e.getMessage()));
         }
     }
 
 
-    // Login
+    // ---------------- LOGIN ----------------
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
 
@@ -60,10 +63,14 @@ public class AuthController {
         Optional<User> user = userRepository.findByEmail(email);
 
         if (user.isPresent() && user.get().getPassword().equals(password)) {
+
+            // ❌ BLOCK if not approved
             if (!user.get().isApproved()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(Map.of("error", "Your account is pending approval by a super admin."));
+                        .body(Map.of("error", "Your account is pending approval by super admin"));
             }
+
+            // ✅ RETURN FULL USER (includes superAdmin)
             return ResponseEntity.ok(user.get());
         }
 
@@ -72,7 +79,7 @@ public class AuthController {
     }
 
 
-    // Request OTP
+    // ---------------- OTP REQUEST ----------------
     @PostMapping("/otp/request")
     public ResponseEntity<?> requestOTP(@RequestBody Map<String, String> request) {
 
@@ -85,13 +92,13 @@ public class AuthController {
         System.out.println("OTP for " + email + " is: " + otp);
 
         return ResponseEntity.ok(Map.of(
-            "message", "OTP sent successfully",
-            "otp", otp
+                "message", "OTP sent successfully",
+                "otp", otp
         ));
     }
 
 
-    // Verify OTP
+    // ---------------- OTP VERIFY ----------------
     @PostMapping("/otp/verify")
     public ResponseEntity<?> verifyOTP(@RequestBody Map<String, String> request) {
 

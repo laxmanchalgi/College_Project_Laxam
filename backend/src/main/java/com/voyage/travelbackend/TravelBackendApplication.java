@@ -15,18 +15,23 @@ public class TravelBackendApplication {
 	}
 
 	@Bean
-	public CommandLineRunner seedData(UserRepository userRepository) {
-		return args -> {
-			if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {
-				User admin = new User();
-				admin.setEmail("admin@gmail.com");
-				admin.setPassword("admin");
-				admin.setDisplayName("System Admin");
-				admin.setRole("Super_ADMIN");
-				userRepository.save(admin);
-				System.out.println("Default admin user created: admin@gmail.com / admin");
-			}
-		};
-	}
+public CommandLineRunner seedData(UserRepository userRepository) {
+    return args -> {
+        if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {
+
+            User admin = new User();
+            admin.setEmail("admin@gmail.com"); // ✅ FIXED
+            admin.setPassword("admin@123");
+            admin.setDisplayName("System Admin");
+            admin.setRole("ADMIN");
+            admin.setApproved(true); // ✅ already approved
+            admin.setSuperAdmin(true); // ⭐ SUPER ADMIN
+
+            userRepository.save(admin);
+
+            System.out.println("Super Admin created: admin@gmail.com / admin@123");
+        }
+    };
+}
 
 }

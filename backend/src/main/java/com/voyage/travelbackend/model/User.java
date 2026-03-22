@@ -13,6 +13,8 @@ public class User {
     
     @Column(unique = true, nullable = false)
     private String email;
+
+    private boolean superAdmin = false;
     
     @Column(nullable = false)
     private String password;
@@ -41,6 +43,13 @@ public class User {
     public void setUid(String uid) {
         this.uid = uid;
     }
+    public boolean isSuperAdmin() {
+    return superAdmin;
+}
+
+public void setSuperAdmin(boolean superAdmin) {
+    this.superAdmin = superAdmin;
+}
 
     public String getPassword() {
         return password;

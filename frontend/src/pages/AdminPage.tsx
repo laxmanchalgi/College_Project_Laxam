@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 type TabType = "bookings" | "users" | "destinations" | "reviews" | "itineraries";
 
 export default function AdminPage() {
-  const { isSuperAdmin } = useAuth();
+  const { isSuperAdmin ,user } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [destinations, setDestinations] = useState<any[]>([]);
@@ -106,13 +106,13 @@ export default function AdminPage() {
   };
 
   const handleApproveUser = async (uid: string) => {
-    try {
-      await dataService.approveUser(uid);
-      loadData();
-    } catch (err: any) {
-      alert(err.message || "Failed to approve user");
-    }
-  };
+  try {
+    await dataService.approveUser(uid, user.email); // pass logged-in email
+    loadData();
+  } catch (err: any) {
+    alert(err.message);
+  }
+};
 
   return (
     <div className="min-h-screen bg-brand-paper">

@@ -8,6 +8,7 @@ export interface User {
   displayName: string;
   role?: "USER" | "ADMIN";
   approved?: boolean;
+  superAdmin?: boolean;
 }
 
 export interface Review {
@@ -339,13 +340,13 @@ updateDestination: async (id: string, destination: any) => {
     return await res.json();
   },
 
-  approveUser: async (uid: string) => {
-    const res = await fetch(`${API_BASE}/admin/users/${uid}/approve`, {
-      method: "PUT"
-    });
+ approveUser: async (uid: string, adminEmail: string) => {
+  const res = await fetch(`${API_BASE}/admin/users/${uid}/approve?adminEmail=${adminEmail}`, {
+    method: "PUT"
+  });
 
-    if (!res.ok) throw new Error("Failed to approve user");
+  if (!res.ok) throw new Error("Failed to approve user");
 
-    return await res.json();
-  }
+  return await res.json();
+}
 };

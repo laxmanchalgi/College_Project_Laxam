@@ -83,7 +83,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         verifyOTP,
         logout,
         isAdmin: user?.role === "ADMIN",
-        isSuperAdmin: user?.email === "sagar.a.ingale03@gmail.com",
+       isSuperAdmin: user?.superAdmin === true,
       }}
     >
       {children}

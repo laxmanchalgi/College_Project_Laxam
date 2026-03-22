@@ -57,17 +57,30 @@ public class AdminController {
     }
 
     // Approve user
-    @PutMapping("/users/{uid}/approve")
-    public ResponseEntity<?> approveUser(@PathVariable String uid) {
-        Optional<User> user = userRepository.findById(uid);
-        if (user.isPresent()) {
-            User u = user.get();
-            u.setApproved(true);
-            userRepository.save(u);
-            return ResponseEntity.ok(u);
-        }
-        return ResponseEntity.notFound().build();
+  @PutMapping("/users/{uid}/approve")
+public ResponseEntity<?> approveUser(
+        @PathVariable String uid,
+        @RequestParam String adminEmail) {
+
+    Optional<User> adminUser = userRepository.findByEmail(adminEmail);
+
+    // ✅ check super admin
+    if (adminUser.isEmpty() || !adminUser.get().isSuperAdmin()) {
+        return ResponseEntity.status(403)
+                .body(Map.of("error", "Only Super Admin can approve users"));
     }
+
+    Optional<User> user = userRepository.findById(uid);
+
+    if (user.isPresent()) {
+        User u = user.get();
+        u.setApproved(true);
+        userRepository.save(u);
+        return ResponseEntity.ok(u);
+    }
+
+    return ResponseEntity.notFound().build();
+}
 
     // Admin Stats
     @GetMapping("/stats")

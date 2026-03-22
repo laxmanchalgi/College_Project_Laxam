@@ -196,7 +196,7 @@ export default function LoginPage() {
           }}
           className="w-full py-4 border border-brand-dark/10 text-brand-dark rounded-2xl font-bold uppercase tracking-widest hover:bg-brand-paper transition-all text-xs"
         >
-          Sign in as Admin
+          Sign in as Super Admin
         </button>
 
         <p className="text-center text-sm text-black/40 mt-8">
