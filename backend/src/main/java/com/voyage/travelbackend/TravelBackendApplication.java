@@ -24,14 +24,11 @@ public CommandLineRunner seedData(UserRepository userRepository) {
             admin.setPassword("admin@123");
             admin.setDisplayName("System Admin");
             admin.setRole("ADMIN");
-			
             admin.setApproved(true);
-			 // 
-            admin.setSuperAdmin(true); // 
-
+            admin.setSuperAdmin(true); 
             userRepository.save(admin);
 
-            System.out.println("Super Admin created: admin@gmail.com / admin@123");
+        
         }
     };
 }
